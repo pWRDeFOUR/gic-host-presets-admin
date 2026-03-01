@@ -87,15 +87,11 @@ body {
 }
 
 .provider-form {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-end;
+    grid-template-columns: minmax(180px, 1fr) minmax(180px, 1fr) auto auto;
 }
 
 .host-form {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-end;
+    grid-template-columns: minmax(150px, 1fr) minmax(240px, 1.5fr) 110px minmax(150px, 1fr) auto auto;
 }
 
 .form-field {
@@ -114,62 +110,33 @@ body {
     min-width: 0;
 }
 
-.form-check {
-    display: inline-flex;
-    gap: 8px;
-    align-items: center;
-    white-space: nowrap;
-    color: var(--muted);
-    font-size: 13px;
-    padding-bottom: 8px;
-    min-width: 120px;
-}
-
 .provider-save,
 .host-save {
     min-height: 40px;
     white-space: nowrap;
 }
 
-.provider-form .form-field:nth-child(1) {
-    flex: 1 1 220px;
-}
-
-.provider-form .form-field:nth-child(2) {
-    flex: 1 1 220px;
-}
-
-.provider-form .provider-enabled {
-    margin-left: auto;
-}
-
 .provider-form .provider-save {
-    margin-left: 0;
-}
-
-.host-form .form-field:nth-child(1) {
-    flex: 1 1 180px;
+    justify-self: start;
 }
 
 .host-form .host-save {
-    margin-left: 0;
+    justify-self: start;
 }
 
-.host-form .form-field:nth-child(2) {
-    flex: 2 1 280px;
+.toggle-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 40px;
+    color: var(--muted);
+    white-space: nowrap;
 }
 
-.host-form .form-field:nth-child(3) {
-    flex: 0 0 120px;
-}
-
-.host-form .form-field:nth-child(4) {
-    flex: 1 1 180px;
-}
-
-.host-form .host-enabled {
-    margin-left: auto;
-    padding-bottom: 6px;
+.form-action > span,
+.form-toggle > span {
+    font-size: 12px;
+    color: var(--muted);
 }
 
 .table-wrap {
@@ -314,21 +281,11 @@ pre {
 
     .provider-form,
     .host-form {
-        display: grid;
         grid-template-columns: 1fr;
-    }
-
-    .form-check {
-        padding-bottom: 0;
     }
 
     .provider-form .provider-save,
     .host-form .host-save {
-        margin-left: 0;
-    }
-
-    .provider-form .provider-enabled,
-    .host-form .host-enabled {
-        margin-left: 0;
+        width: 100%;
     }
 }

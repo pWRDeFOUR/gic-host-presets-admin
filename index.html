@@ -93,11 +93,17 @@
                         <span>Display Name</span>
                         <input id="providerNameInput" placeholder="display name">
                     </label>
-                    <label class="form-check provider-enabled">
-                        <input id="providerEnabledInput" type="checkbox" checked>
+                    <label class="form-field form-toggle provider-enabled">
                         <span>Enabled</span>
+                        <span class="toggle-row">
+                            <input id="providerEnabledInput" type="checkbox" checked>
+                            <span>Enabled</span>
+                        </span>
                     </label>
-                    <button id="saveProviderBtn" class="primary provider-save">Save Provider</button>
+                    <label class="form-field form-action">
+                        <span>&nbsp;</span>
+                        <button id="saveProviderBtn" class="primary provider-save">Save Provider</button>
+                    </label>
                 </div>
 
                 <div class="table-wrap">
@@ -133,11 +139,17 @@
                         <span>Label</span>
                         <input id="hostLabelInput" placeholder="Primary host (optional)">
                     </label>
-                    <label class="form-check host-enabled">
-                        <input id="hostEnabledInput" type="checkbox" checked>
+                    <label class="form-field form-toggle host-enabled">
                         <span>Enabled</span>
+                        <span class="toggle-row">
+                            <input id="hostEnabledInput" type="checkbox" checked>
+                            <span>Enabled</span>
+                        </span>
                     </label>
-                    <button id="saveHostBtn" class="primary host-save">Save Host</button>
+                    <label class="form-field form-action">
+                        <span>&nbsp;</span>
+                        <button id="saveHostBtn" class="primary host-save">Save Host</button>
+                    </label>
                 </div>
                 <div class="tiny top-gap">
                     Host ID: slug <code>[a-z0-9_-]</code> like <code>tiger_primary</code>.
