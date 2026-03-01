@@ -91,7 +91,8 @@ body {
 }
 
 .host-form {
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    grid-template-columns: minmax(170px, 1fr) minmax(280px, 1.5fr) 120px minmax(170px, 1fr) auto auto;
+    align-items: end;
 }
 
 .form-field {
@@ -136,7 +137,12 @@ body {
 }
 
 .host-form .form-field:nth-child(2) {
-    grid-column: span 2;
+    grid-column: span 1;
+}
+
+.host-form .host-enabled {
+    justify-self: end;
+    padding-bottom: 6px;
 }
 
 .table-wrap {
@@ -284,10 +290,6 @@ pre {
         grid-template-columns: 1fr;
     }
 
-    .host-form .form-field:nth-child(2) {
-        grid-column: span 1;
-    }
-
     .form-check {
         padding-bottom: 0;
     }
@@ -295,5 +297,11 @@ pre {
     .provider-form .provider-save,
     .host-form .host-save {
         justify-self: start;
+    }
+}
+
+@media (max-width: 1280px) and (min-width: 901px) {
+    .host-form {
+        grid-template-columns: minmax(170px, 1fr) minmax(220px, 1.2fr) 100px minmax(170px, 1fr) auto auto;
     }
 }
