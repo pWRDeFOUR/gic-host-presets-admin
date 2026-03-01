@@ -87,11 +87,11 @@ body {
 }
 
 .provider-form {
-    grid-template-columns: minmax(180px, 1fr) minmax(200px, 1fr) auto auto;
+    grid-template-columns: minmax(200px, 1fr) minmax(220px, 1fr) auto auto;
 }
 
 .host-form {
-    grid-template-columns: minmax(180px, 1fr) minmax(240px, 1.2fr) 110px minmax(180px, 1fr) auto auto;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
 }
 
 .form-field {
@@ -118,11 +118,31 @@ body {
     color: var(--muted);
     font-size: 13px;
     padding-bottom: 8px;
+    min-width: 120px;
 }
 
 .provider-save,
 .host-save {
     min-height: 40px;
+    white-space: nowrap;
+}
+
+.provider-form .provider-save {
+    justify-self: end;
+}
+
+.host-form .host-save {
+    justify-self: end;
+}
+
+.host-form .form-field:nth-child(2) {
+    grid-column: span 2;
+}
+
+.table-wrap {
+    width: 100%;
+    margin-top: 12px;
+    overflow-x: auto;
 }
 
 input,
@@ -217,8 +237,8 @@ button:disabled {
 
 table {
     width: 100%;
+    min-width: 700px;
     border-collapse: collapse;
-    margin-top: 12px;
     font-size: 13px;
 }
 
@@ -264,7 +284,16 @@ pre {
         grid-template-columns: 1fr;
     }
 
+    .host-form .form-field:nth-child(2) {
+        grid-column: span 1;
+    }
+
     .form-check {
         padding-bottom: 0;
+    }
+
+    .provider-form .provider-save,
+    .host-form .host-save {
+        justify-self: start;
     }
 }
