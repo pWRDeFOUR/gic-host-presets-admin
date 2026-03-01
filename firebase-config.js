@@ -1,5 +1,5 @@
 window.GIC_FIREBASE_CONFIG = {
-    apiKey: "AIzaSyCzOc_BdauydXhGgJgkL0EwNXXKDFnDlSo",
+    apiKey: "AIzaSyB54TKvpfoU1z2BtDHhWphJ62ZPvUIme8k",
     authDomain: "gic-iptv-tracker.firebaseapp.com",
     databaseURL: "https://gic-iptv-tracker-default-rtdb.europe-west1.firebasedatabase.app",
     projectId: "gic-iptv-tracker",
