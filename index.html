@@ -75,11 +75,20 @@
             </aside>
 
             <main>
-                <div class="row">
-                    <input id="providerIdInput" placeholder="provider id" disabled>
-                    <input id="providerNameInput" placeholder="display name">
-                    <label><input id="providerEnabledInput" type="checkbox" checked> enabled</label>
-                    <button id="saveProviderBtn" class="primary">Save Provider</button>
+                <div class="form-grid provider-form">
+                    <label class="form-field">
+                        <span>Provider ID</span>
+                        <input id="providerIdInput" placeholder="provider id" disabled>
+                    </label>
+                    <label class="form-field">
+                        <span>Display Name</span>
+                        <input id="providerNameInput" placeholder="display name">
+                    </label>
+                    <label class="form-check provider-enabled">
+                        <input id="providerEnabledInput" type="checkbox" checked>
+                        <span>Enabled</span>
+                    </label>
+                    <button id="saveProviderBtn" class="primary provider-save">Save Provider</button>
                 </div>
 
                 <table>
@@ -96,16 +105,33 @@
                     <tbody id="hostsBody"></tbody>
                 </table>
 
-                <div class="row top-gap">
-                    <input id="hostIdInput" placeholder="host id">
-                    <input id="hostUrlInput" placeholder="http://domain:port">
-                    <input id="hostOrderInput" type="number" placeholder="order" value="10">
-                    <input id="hostLabelInput" placeholder="label (optional)">
-                    <label><input id="hostEnabledInput" type="checkbox" checked> enabled</label>
-                    <button id="saveHostBtn" class="primary">Save Host</button>
+                <div class="form-grid host-form top-gap">
+                    <label class="form-field">
+                        <span>Host ID</span>
+                        <input id="hostIdInput" placeholder="tiger_primary (optional)">
+                    </label>
+                    <label class="form-field">
+                        <span>Base URL</span>
+                        <input id="hostUrlInput" placeholder="http://domain:port">
+                    </label>
+                    <label class="form-field">
+                        <span>Order</span>
+                        <input id="hostOrderInput" type="number" placeholder="10" value="10">
+                    </label>
+                    <label class="form-field">
+                        <span>Label</span>
+                        <input id="hostLabelInput" placeholder="Primary host (optional)">
+                    </label>
+                    <label class="form-check host-enabled">
+                        <input id="hostEnabledInput" type="checkbox" checked>
+                        <span>Enabled</span>
+                    </label>
+                    <button id="saveHostBtn" class="primary host-save">Save Host</button>
                 </div>
                 <div class="tiny top-gap">
-                    Host ID: <code>[a-z0-9_-]</code>, URL must be absolute <code>http://</code> or <code>https://</code>.
+                    Host ID: slug <code>[a-z0-9_-]</code> like <code>tiger_primary</code>.
+                    If empty, it auto-generates from URL hostname.
+                    URL must be absolute <code>http://</code> or <code>https://</code>.
                 </div>
             </main>
         </div>

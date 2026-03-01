@@ -128,6 +128,43 @@
         }
     }
 
+    function autoGenerateHostId(baseUrl, provider) {
+        if (!baseUrl) {
+            return "";
+        }
+        let candidate = "";
+        try {
+            const parsed = new URL(baseUrl);
+            const host = safeTrim(parsed.hostname).toLowerCase().replace(/[^a-z0-9]+/g, "_");
+            const port = safeTrim(parsed.port);
+            candidate = host;
+            if (port) {
+                candidate += "_" + port;
+            }
+            candidate = candidate.replace(/^_+|_+$/g, "");
+        } catch (e) {
+            candidate = "";
+        }
+        if (!candidate) {
+            candidate = "host";
+        }
+        if (!/^[a-z0-9_-]+$/.test(candidate)) {
+            candidate = "host";
+        }
+
+        const usedIds = provider && provider.hosts ? Object.keys(provider.hosts) : [];
+        if (usedIds.indexOf(candidate) < 0) {
+            return candidate;
+        }
+        let index = 2;
+        let suffixed = candidate + "_" + index;
+        while (usedIds.indexOf(suffixed) >= 0) {
+            index += 1;
+            suffixed = candidate + "_" + index;
+        }
+        return suffixed;
+    }
+
     async function signIn() {
         const email = safeTrim(byId("emailInput").value);
         const password = byId("passwordInput").value || "";
@@ -465,14 +502,19 @@
             return;
         }
 
-        const hostId = normalizeSlug(byId("hostIdInput").value);
         const baseUrl = normalizeBaseUrl(byId("hostUrlInput").value);
+        const provider = state.providers[providerId] || {};
+        let hostId = normalizeSlug(byId("hostIdInput").value);
+        if (!hostId) {
+            hostId = autoGenerateHostId(baseUrl, provider);
+            byId("hostIdInput").value = hostId;
+        }
         const order = parseInt(byId("hostOrderInput").value || "10", 10);
         const label = safeTrim(byId("hostLabelInput").value);
         const enabled = byId("hostEnabledInput").checked;
 
         if (!hostId) {
-            setStatus(els.appStatus, "Invalid host ID.", "err");
+            setStatus(els.appStatus, "Invalid host ID. Use letters/numbers/_/- or leave empty for auto.", "err");
             return;
         }
         if (!baseUrl) {
