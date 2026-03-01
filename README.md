@@ -59,10 +59,10 @@ Notes:
 2. If ACL is missing, page shows UID and ACL JSON sample.
 3. Add/edit providers.
 4. Add hosts for each provider with:
-   - `hostId` slug (`[a-z0-9_-]`) or leave empty to auto-generate from hostname
+   - `hostId` is auto-generated as incremental numeric ID (`1, 2, 3...`)
    - absolute `baseUrl` (`http://host:port` or `https://host:port`)
-   - `order` (lower = tried first)
    - `enabled` (disabled hosts are skipped by app)
+   - when a host is deleted, remaining IDs are re-sequenced to keep continuity
 
 ## App integration path
 

@@ -112,7 +112,6 @@
                         <tr>
                             <th>Host ID</th>
                             <th>Base URL</th>
-                            <th>Order</th>
                             <th>Enabled</th>
                             <th>Label</th>
                             <th>Actions</th>
@@ -125,15 +124,11 @@
                 <div class="form-grid host-form top-gap">
                     <label class="form-field">
                         <span>Host ID</span>
-                        <input id="hostIdInput" placeholder="tiger_primary (optional)">
+                        <input id="hostIdInput" placeholder="Auto" disabled>
                     </label>
                     <label class="form-field">
                         <span>Base URL</span>
                         <input id="hostUrlInput" placeholder="http://domain:port">
-                    </label>
-                    <label class="form-field">
-                        <span>Order</span>
-                        <input id="hostOrderInput" type="number" placeholder="10" value="10">
                     </label>
                     <label class="form-field">
                         <span>Label</span>
@@ -152,8 +147,8 @@
                     </label>
                 </div>
                 <div class="tiny top-gap">
-                    Host ID: slug <code>[a-z0-9_-]</code> like <code>tiger_primary</code>.
-                    If empty, it auto-generates from URL hostname.
+                    Host ID is auto-incremented per provider (<code>1, 2, 3...</code>).
+                    If one is deleted, IDs are re-sequenced automatically.
                     URL must be absolute <code>http://</code> or <code>https://</code>.
                 </div>
             </main>

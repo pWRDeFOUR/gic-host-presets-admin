@@ -115,6 +115,11 @@
         return value;
     }
 
+    function parsePositiveInt(raw) {
+        const value = parseInt(String(raw || "").trim(), 10);
+        return Number.isFinite(value) && value > 0 ? value : 0;
+    }
+
     function normalizeBaseUrl(raw) {
         try {
             const parsed = new URL(safeTrim(raw));
@@ -128,41 +133,54 @@
         }
     }
 
-    function autoGenerateHostId(baseUrl, provider) {
-        if (!baseUrl) {
-            return "";
-        }
-        let candidate = "";
-        try {
-            const parsed = new URL(baseUrl);
-            const host = safeTrim(parsed.hostname).toLowerCase().replace(/[^a-z0-9]+/g, "_");
-            const port = safeTrim(parsed.port);
-            candidate = host;
-            if (port) {
-                candidate += "_" + port;
-            }
-            candidate = candidate.replace(/^_+|_+$/g, "");
-        } catch (e) {
-            candidate = "";
-        }
-        if (!candidate) {
-            candidate = "host";
-        }
-        if (!/^[a-z0-9_-]+$/.test(candidate)) {
-            candidate = "host";
-        }
-
+    function autoGenerateHostId(provider) {
         const usedIds = provider && provider.hosts ? Object.keys(provider.hosts) : [];
-        if (usedIds.indexOf(candidate) < 0) {
-            return candidate;
+        let maxId = 0;
+        usedIds.forEach(function (id) {
+            const numeric = parsePositiveInt(id);
+            if (numeric > maxId) {
+                maxId = numeric;
+            }
+        });
+        return String(maxId + 1);
+    }
+
+    function buildReindexedHostsMap(provider) {
+        const source = provider && provider.hosts ? provider.hosts : {};
+        const entries = Object.keys(source).map(function (hostId) {
+            const host = source[hostId] || {};
+            const numericId = parsePositiveInt(hostId);
+            const orderRaw = parseInt(host.order, 10);
+            return {
+                oldHostId: hostId,
+                numericId: numericId > 0 ? numericId : Number.MAX_SAFE_INTEGER,
+                order: Number.isFinite(orderRaw) ? orderRaw : Number.MAX_SAFE_INTEGER,
+                host: host
+            };
+        }).sort(function (a, b) {
+            if (a.numericId !== b.numericId) {
+                return a.numericId - b.numericId;
+            }
+            if (a.order !== b.order) {
+                return a.order - b.order;
+            }
+            return a.oldHostId.localeCompare(b.oldHostId);
+        });
+
+        const output = {};
+        for (let i = 0; i < entries.length; i++) {
+            const id = String(i + 1);
+            const src = entries[i].host || {};
+            output[id] = {
+                baseUrl: src.baseUrl || "",
+                label: src.label || "",
+                enabled: src.enabled !== false,
+                order: i + 1,
+                updatedAtMs: src.updatedAtMs || nowMs(),
+                updatedByUid: src.updatedByUid || (state.user ? state.user.uid : "")
+            };
         }
-        let index = 2;
-        let suffixed = candidate + "_" + index;
-        while (usedIds.indexOf(suffixed) >= 0) {
-            index += 1;
-            suffixed = candidate + "_" + index;
-        }
-        return suffixed;
+        return output;
     }
 
     async function signIn() {
@@ -367,7 +385,7 @@
                 return {
                     hostId: hostId,
                     baseUrl: normalizeBaseUrl(host.baseUrl || ""),
-                    order: Number.isFinite(orderRaw) ? orderRaw : 9999,
+                    order: Number.isFinite(orderRaw) ? orderRaw : parsePositiveInt(hostId),
                     enabled: host.enabled !== false,
                     label: safeTrim(host.label),
                     updatedAtMs: Number(host.updatedAtMs || 0)
@@ -377,8 +395,10 @@
                 return !!entry.baseUrl;
             })
             .sort(function (left, right) {
-                if (left.order !== right.order) {
-                    return left.order - right.order;
+                const leftId = parsePositiveInt(left.hostId);
+                const rightId = parsePositiveInt(right.hostId);
+                if (leftId > 0 && rightId > 0 && leftId !== rightId) {
+                    return leftId - rightId;
                 }
                 return left.hostId.localeCompare(right.hostId);
             });
@@ -396,6 +416,7 @@
         byId("saveProviderBtn").disabled = !editable;
         byId("deleteProviderBtn").disabled = !editable;
         byId("saveHostBtn").disabled = !editable;
+        byId("hostIdInput").value = provider ? autoGenerateHostId(provider) : "";
 
         els.hostsBody.innerHTML = "";
         if (!provider) {
@@ -406,7 +427,6 @@
             const row = document.createElement("tr");
             row.innerHTML = "<td>" + escapeHtml(host.hostId) + "</td>"
                 + "<td>" + escapeHtml(host.baseUrl) + "</td>"
-                + "<td>" + host.order + "</td>"
                 + "<td>" + host.enabled + "</td>"
                 + "<td>" + escapeHtml(host.label) + "</td>"
                 + "<td><button class=\"danger\" data-host-id=\"" + escapeHtml(host.hostId) + "\">Delete</button></td>";
@@ -504,12 +524,8 @@
 
         const baseUrl = normalizeBaseUrl(byId("hostUrlInput").value);
         const provider = state.providers[providerId] || {};
-        let hostId = normalizeSlug(byId("hostIdInput").value);
-        if (!hostId) {
-            hostId = autoGenerateHostId(baseUrl, provider);
-            byId("hostIdInput").value = hostId;
-        }
-        const order = parseInt(byId("hostOrderInput").value || "10", 10);
+        const hostId = autoGenerateHostId(provider);
+        byId("hostIdInput").value = hostId;
         const label = safeTrim(byId("hostLabelInput").value);
         const enabled = byId("hostEnabledInput").checked;
 
@@ -524,7 +540,7 @@
 
         await db.ref(makePath("providers", providerId, "hosts", hostId)).set({
             baseUrl: baseUrl,
-            order: Number.isFinite(order) ? order : 10,
+            order: parsePositiveInt(hostId),
             label: label,
             enabled: enabled,
             updatedAtMs: nowMs(),
@@ -536,7 +552,6 @@
             updatedByUid: state.user.uid
         });
 
-        byId("hostIdInput").value = "";
         byId("hostUrlInput").value = "";
         byId("hostLabelInput").value = "";
 
@@ -556,6 +571,12 @@
         }
 
         await db.ref(makePath("providers", providerId, "hosts", hostId)).remove();
+
+        const refreshedProviderSnapshot = await db.ref(makePath("providers", providerId)).once("value");
+        const refreshedProvider = refreshedProviderSnapshot.val() || {};
+        const reindexedHosts = buildReindexedHostsMap(refreshedProvider);
+        await db.ref(makePath("providers", providerId, "hosts")).set(reindexedHosts);
+
         await db.ref(makePath("providers", providerId)).update({
             updatedAtMs: nowMs(),
             updatedByUid: state.user.uid
