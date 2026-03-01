@@ -87,12 +87,15 @@ body {
 }
 
 .provider-form {
-    grid-template-columns: minmax(200px, 1fr) minmax(220px, 1fr) auto auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
 }
 
 .host-form {
-    grid-template-columns: minmax(170px, 1fr) minmax(280px, 1.5fr) 120px minmax(170px, 1fr) auto auto;
-    align-items: end;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
 }
 
 .form-field {
@@ -128,20 +131,44 @@ body {
     white-space: nowrap;
 }
 
+.provider-form .form-field:nth-child(1) {
+    flex: 1 1 220px;
+}
+
+.provider-form .form-field:nth-child(2) {
+    flex: 1 1 220px;
+}
+
+.provider-form .provider-enabled {
+    margin-left: auto;
+}
+
 .provider-form .provider-save {
-    justify-self: end;
+    margin-left: 0;
+}
+
+.host-form .form-field:nth-child(1) {
+    flex: 1 1 180px;
 }
 
 .host-form .host-save {
-    justify-self: end;
+    margin-left: 0;
 }
 
 .host-form .form-field:nth-child(2) {
-    grid-column: span 1;
+    flex: 2 1 280px;
+}
+
+.host-form .form-field:nth-child(3) {
+    flex: 0 0 120px;
+}
+
+.host-form .form-field:nth-child(4) {
+    flex: 1 1 180px;
 }
 
 .host-form .host-enabled {
-    justify-self: end;
+    margin-left: auto;
     padding-bottom: 6px;
 }
 
@@ -287,6 +314,7 @@ pre {
 
     .provider-form,
     .host-form {
+        display: grid;
         grid-template-columns: 1fr;
     }
 
@@ -296,12 +324,11 @@ pre {
 
     .provider-form .provider-save,
     .host-form .host-save {
-        justify-self: start;
+        margin-left: 0;
     }
-}
 
-@media (max-width: 1280px) and (min-width: 901px) {
-    .host-form {
-        grid-template-columns: minmax(170px, 1fr) minmax(220px, 1.2fr) 100px minmax(170px, 1fr) auto auto;
+    .provider-form .provider-enabled,
+    .host-form .host-enabled {
+        margin-left: 0;
     }
 }
