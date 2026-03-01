@@ -1,0 +1,30 @@
+{
+  "rules": {
+    "trackers": {
+      "$tracker": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      }
+    },
+    "hostPresets": {
+      "v1": {
+        ".read": "auth != null",
+        "meta": {
+          ".write": "auth != null && root.child('hostPresets/v1/adminAcl').child(auth.uid).child('superAdmin').val() === true"
+        },
+        "adminAcl": {
+          "$uid": {
+            ".read": "auth != null && (auth.uid === $uid || root.child('hostPresets/v1/adminAcl').child(auth.uid).child('superAdmin').val() === true)",
+            ".write": "auth != null && root.child('hostPresets/v1/adminAcl').child(auth.uid).child('superAdmin').val() === true"
+          }
+        },
+        "providers": {
+          "$providerId": {
+            ".read": "auth != null",
+            ".write": "auth != null && (root.child('hostPresets/v1/adminAcl').child(auth.uid).child('superAdmin').val() === true || root.child('hostPresets/v1/adminAcl').child(auth.uid).child('providers').child($providerId).val() === true)"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GIC IPTV Host Presets Admin</title>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <script src="./firebase-config.js"></script>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<div class="container">
+    <header class="hero">
+        <h1>GIC IPTV Host Presets Admin</h1>
+        <p>Manage provider pools under <code>hostPresets/v1/providers</code>.</p>
+    </header>
+
+    <section id="configAlert" class="panel danger hidden">
+        <h2>Missing Firebase configuration</h2>
+        <p>
+            Edit <code>firebase-config.js</code> and set <code>window.GIC_FIREBASE_CONFIG</code>.
+            Then reload this page.
+        </p>
+    </section>
+
+    <section id="authPanel" class="panel">
+        <h2>Admin Sign In</h2>
+        <div class="row">
+            <input id="emailInput" type="email" placeholder="Admin email">
+            <input id="passwordInput" type="password" placeholder="Password">
+        </div>
+        <div class="row">
+            <button id="signInBtn" class="primary">Sign In</button>
+            <button id="createUserBtn">Create User</button>
+            <button id="resetPasswordBtn">Reset Password</button>
+        </div>
+        <div id="authStatus" class="status"></div>
+    </section>
+
+    <section id="appPanel" class="panel hidden">
+        <div class="row spread">
+            <div>
+                <div id="userLabel" class="mono"></div>
+                <div id="uidLabel" class="tiny"></div>
+            </div>
+            <div class="row tight">
+                <button id="refreshBtn">Refresh</button>
+                <button id="signOutBtn">Sign Out</button>
+            </div>
+        </div>
+        <div id="appStatus" class="status"></div>
+    </section>
+
+    <section id="aclPanel" class="panel warning hidden">
+        <h2>ACL Missing for This User</h2>
+        <p>
+            This account is authenticated but has no access entry under
+            <code id="aclPath"></code>.
+        </p>
+        <p>Add this JSON in Firebase Realtime Database (replace provider ids):</p>
+        <pre id="aclSample"></pre>
+        <p class="tiny">After adding ACL, click Refresh.</p>
+    </section>
+
+    <section id="mainPanel" class="panel hidden">
+        <div class="grid">
+            <aside>
+                <div class="row">
+                    <button id="addProviderBtn" class="primary">Add Provider</button>
+                    <button id="deleteProviderBtn" class="danger">Delete Provider</button>
+                </div>
+                <div id="providerList" class="provider-list"></div>
+            </aside>
+
+            <main>
+                <div class="row">
+                    <input id="providerIdInput" placeholder="provider id" disabled>
+                    <input id="providerNameInput" placeholder="display name">
+                    <label><input id="providerEnabledInput" type="checkbox" checked> enabled</label>
+                    <button id="saveProviderBtn" class="primary">Save Provider</button>
+                </div>
+
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Host ID</th>
+                        <th>Base URL</th>
+                        <th>Order</th>
+                        <th>Enabled</th>
+                        <th>Label</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody id="hostsBody"></tbody>
+                </table>
+
+                <div class="row top-gap">
+                    <input id="hostIdInput" placeholder="host id">
+                    <input id="hostUrlInput" placeholder="http://domain:port">
+                    <input id="hostOrderInput" type="number" placeholder="order" value="10">
+                    <input id="hostLabelInput" placeholder="label (optional)">
+                    <label><input id="hostEnabledInput" type="checkbox" checked> enabled</label>
+                    <button id="saveHostBtn" class="primary">Save Host</button>
+                </div>
+                <div class="tiny top-gap">
+                    Host ID: <code>[a-z0-9_-]</code>, URL must be absolute <code>http://</code> or <code>https://</code>.
+                </div>
+            </main>
+        </div>
+    </section>
+</div>
+
+<script src="./app.js"></script>
+</body>
+</html>
