@@ -91,7 +91,7 @@ body {
 }
 
 .host-form {
-    grid-template-columns: 100px minmax(280px, 1.8fr) minmax(170px, 1fr) auto auto;
+    grid-template-columns: 100px minmax(360px, 1.8fr) auto auto;
 }
 
 .form-field {

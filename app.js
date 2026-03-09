@@ -7,7 +7,8 @@
         user: null,
         acl: null,
         providers: {},
-        selectedProviderId: ""
+        selectedProviderId: "",
+        editingHostId: ""
     };
 
     const els = {
@@ -51,6 +52,7 @@
         byId("deleteProviderBtn").onclick = deleteProvider;
         byId("saveProviderBtn").onclick = saveProvider;
         byId("saveHostBtn").onclick = saveHost;
+        byId("cancelHostEditBtn").onclick = resetHostForm;
     }
 
     function disableAllButtons() {
@@ -121,8 +123,15 @@
     }
 
     function normalizeBaseUrl(raw) {
+        let value = safeTrim(raw);
+        if (!value) {
+            return "";
+        }
+        if (!/^https?:\/\//i.test(value)) {
+            value = "http://" + value;
+        }
         try {
-            const parsed = new URL(safeTrim(raw));
+            const parsed = new URL(value);
             if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
                 return "";
             }
@@ -173,7 +182,6 @@
             const src = entries[i].host || {};
             output[id] = {
                 baseUrl: src.baseUrl || "",
-                label: src.label || "",
                 enabled: src.enabled !== false,
                 order: i + 1,
                 updatedAtMs: src.updatedAtMs || nowMs(),
@@ -387,7 +395,6 @@
                     baseUrl: normalizeBaseUrl(host.baseUrl || ""),
                     order: Number.isFinite(orderRaw) ? orderRaw : parsePositiveInt(hostId),
                     enabled: host.enabled !== false,
-                    label: safeTrim(host.label),
                     updatedAtMs: Number(host.updatedAtMs || 0)
                 };
             })
@@ -416,10 +423,10 @@
         byId("saveProviderBtn").disabled = !editable;
         byId("deleteProviderBtn").disabled = !editable;
         byId("saveHostBtn").disabled = !editable;
-        byId("hostIdInput").value = provider ? autoGenerateHostId(provider) : "";
 
         els.hostsBody.innerHTML = "";
         if (!provider) {
+            resetHostForm();
             return;
         }
 
@@ -428,15 +435,53 @@
             row.innerHTML = "<td>" + escapeHtml(host.hostId) + "</td>"
                 + "<td>" + escapeHtml(host.baseUrl) + "</td>"
                 + "<td>" + host.enabled + "</td>"
-                + "<td>" + escapeHtml(host.label) + "</td>"
-                + "<td><button class=\"danger\" data-host-id=\"" + escapeHtml(host.hostId) + "\">Delete</button></td>";
-            const button = row.querySelector("button");
-            button.onclick = function () {
-                deleteHost(host.hostId);
-            };
-            button.disabled = !editable;
+                + "<td>"
+                + "<button data-host-id=\"" + escapeHtml(host.hostId) + "\" data-action=\"edit\">Edit</button> "
+                + "<button class=\"danger\" data-host-id=\"" + escapeHtml(host.hostId) + "\" data-action=\"delete\">Delete</button>"
+                + "</td>";
+            const buttons = row.querySelectorAll("button");
+            buttons.forEach(function (button) {
+                const action = button.getAttribute("data-action");
+                button.onclick = function () {
+                    if (action === "edit") {
+                        startEditHost(host.hostId);
+                        return;
+                    }
+                    deleteHost(host.hostId);
+                };
+                button.disabled = !editable;
+            });
             els.hostsBody.appendChild(row);
         });
+
+        resetHostForm();
+    }
+
+    function startEditHost(hostId) {
+        const providerId = state.selectedProviderId;
+        const provider = providerId ? (state.providers[providerId] || {}) : null;
+        const host = provider && provider.hosts ? (provider.hosts[hostId] || null) : null;
+        if (!provider || !host) {
+            setStatus(els.appStatus, "Host not found for editing.", "err");
+            return;
+        }
+        state.editingHostId = hostId;
+        byId("hostIdInput").value = hostId;
+        byId("hostUrlInput").value = safeTrim(host.baseUrl);
+        byId("hostEnabledInput").checked = host.enabled !== false;
+        byId("saveHostBtn").textContent = "Update Host";
+        byId("cancelHostEditBtn").classList.remove("hidden");
+    }
+
+    function resetHostForm() {
+        const providerId = state.selectedProviderId;
+        const provider = providerId ? (state.providers[providerId] || {}) : null;
+        state.editingHostId = "";
+        byId("hostIdInput").value = provider ? autoGenerateHostId(provider) : "";
+        byId("hostUrlInput").value = "";
+        byId("hostEnabledInput").checked = true;
+        byId("saveHostBtn").textContent = "Save Host";
+        byId("cancelHostEditBtn").classList.add("hidden");
     }
 
     async function addProvider() {
@@ -524,9 +569,8 @@
 
         const baseUrl = normalizeBaseUrl(byId("hostUrlInput").value);
         const provider = state.providers[providerId] || {};
-        const hostId = autoGenerateHostId(provider);
+        const hostId = safeTrim(state.editingHostId) || autoGenerateHostId(provider);
         byId("hostIdInput").value = hostId;
-        const label = safeTrim(byId("hostLabelInput").value);
         const enabled = byId("hostEnabledInput").checked;
 
         if (!hostId) {
@@ -541,7 +585,6 @@
         await db.ref(makePath("providers", providerId, "hosts", hostId)).set({
             baseUrl: baseUrl,
             order: parsePositiveInt(hostId),
-            label: label,
             enabled: enabled,
             updatedAtMs: nowMs(),
             updatedByUid: state.user.uid
@@ -551,9 +594,6 @@
             updatedAtMs: nowMs(),
             updatedByUid: state.user.uid
         });
-
-        byId("hostUrlInput").value = "";
-        byId("hostLabelInput").value = "";
 
         await loadAclAndProviders();
         setStatus(els.appStatus, "Host " + hostId + " saved.", "ok");

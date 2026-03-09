@@ -113,7 +113,6 @@
                             <th>Host ID</th>
                             <th>Base URL</th>
                             <th>Enabled</th>
-                            <th>Label</th>
                             <th>Actions</th>
                         </tr>
                         </thead>
@@ -130,10 +129,6 @@
                         <span>Base URL</span>
                         <input id="hostUrlInput" placeholder="http://domain:port">
                     </label>
-                    <label class="form-field">
-                        <span>Label</span>
-                        <input id="hostLabelInput" placeholder="Primary host (optional)">
-                    </label>
                     <label class="form-field form-toggle host-enabled">
                         <span>Enabled</span>
                         <span class="toggle-row">
@@ -143,13 +138,16 @@
                     </label>
                     <label class="form-field form-action">
                         <span>&nbsp;</span>
-                        <button id="saveHostBtn" class="primary host-save">Save Host</button>
+                        <div class="row tight">
+                            <button id="saveHostBtn" class="primary host-save">Save Host</button>
+                            <button id="cancelHostEditBtn" class="hidden">Cancel</button>
+                        </div>
                     </label>
                 </div>
                 <div class="tiny top-gap">
                     Host ID is auto-incremented per provider (<code>1, 2, 3...</code>).
                     If one is deleted, IDs are re-sequenced automatically.
-                    URL must be absolute <code>http://</code> or <code>https://</code>.
+                    If URL has no scheme, <code>http://</code> is added automatically.
                 </div>
             </main>
         </div>
