@@ -74,6 +74,8 @@ body {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
+    width: 100%;
+    max-width: 100%;
 }
 
 .panel h2 {
@@ -120,11 +122,11 @@ body {
 }
 
 .provider-form {
-    grid-template-columns: minmax(180px, 1fr) minmax(180px, 1fr) auto auto;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto auto;
 }
 
 .host-form {
-    grid-template-columns: 100px minmax(280px, 1.8fr) auto auto;
+    grid-template-columns: 100px minmax(0, 1.8fr) auto auto;
 }
 
 .form-field {
@@ -180,11 +182,13 @@ body {
 
 .table-wrap {
     width: 100%;
+    max-width: 100%;
     margin-top: 20px;
     overflow-x: auto;
     border-radius: var(--radius-sm);
     border: 1px solid var(--border);
     background: rgba(15, 23, 42, 0.4);
+    -webkit-overflow-scrolling: touch;
 }
 
 input,
@@ -271,6 +275,7 @@ button:disabled {
     padding: 10px 14px;
     border-radius: var(--radius-sm);
     display: none;
+    word-break: break-word;
 }
 
 .status:not(:empty) {
@@ -303,7 +308,7 @@ button:disabled {
 
 .grid {
     display: grid;
-    grid-template-columns: 340px 1fr;
+    grid-template-columns: 340px minmax(0, 1fr);
     gap: 24px;
     align-items: start;
     width: 100%;
@@ -437,6 +442,7 @@ code,
 pre,
 .mono {
     font-family: "JetBrains Mono", Consolas, Menlo, monospace;
+    word-break: break-word;
 }
 
 code {
@@ -544,7 +550,7 @@ pre {
 /* Mobile & Tablet Responsiveness */
 @media (max-width: 960px) {
     .grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
     }
     
     .hero h1 {
@@ -596,7 +602,7 @@ pre {
 
     .provider-form,
     .host-form {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
     }
 
     .provider-form > *, .host-form > * {
