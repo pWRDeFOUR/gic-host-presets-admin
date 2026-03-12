@@ -29,6 +29,7 @@ body {
     min-height: 100vh;
     padding: 24px 16px;
     line-height: 1.5;
+    overflow-x: hidden;
 }
 
 .container {
@@ -129,13 +130,13 @@ body {
 .form-field {
     display: flex;
     flex-direction: column;
-    gap: 8px;
 }
 
 .form-field span {
     font-size: 13px;
     font-weight: 500;
     color: var(--muted);
+    margin-bottom: 8px;
 }
 
 .form-field input {
@@ -213,6 +214,7 @@ select:focus {
 
 input {
     min-width: 220px;
+    width: 100%;
 }
 
 button {
@@ -304,6 +306,13 @@ button:disabled {
     grid-template-columns: 340px 1fr;
     gap: 24px;
     align-items: start;
+    width: 100%;
+}
+
+.grid > aside,
+.grid > main {
+    min-width: 0; 
+    width: 100%;
 }
 
 .provider-list {
@@ -461,19 +470,19 @@ pre {
 
 /* Auth Panel Styles */
 .auth-panel {
+    width: 100%;
     max-width: 420px;
     margin: 80px auto;
     padding: 40px 32px;
     display: flex;
     flex-direction: column;
-    gap: 24px;
     position: relative;
     box-shadow: 0 0 40px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--border), 0 0 80px rgba(59, 130, 246, 0.15);
 }
 
 .auth-header {
     text-align: center;
-    margin-bottom: 8px;
+    margin-bottom: 32px;
 }
 
 .auth-header h2 {
@@ -492,7 +501,10 @@ pre {
 .auth-form {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+}
+
+.auth-form > .form-field {
+    margin-bottom: 24px;
 }
 
 .auth-submit {
@@ -549,15 +561,27 @@ pre {
         padding: 20px 16px;
     }
 
+    .auth-panel {
+        margin: 40px auto;
+        padding: 32px 20px;
+    }
+
     .row {
         flex-direction: column;
         align-items: stretch;
     }
 
+    .row > * {
+        margin-bottom: 12px;
+    }
+    
+    .row > *:last-child {
+        margin-bottom: 0;
+    }
+
     .row.spread {
         flex-direction: column;
         align-items: flex-start;
-        gap: 16px;
     }
 
     .row.tight {
@@ -573,7 +597,10 @@ pre {
     .provider-form,
     .host-form {
         grid-template-columns: 1fr;
-        gap: 12px;
+    }
+
+    .provider-form > *, .host-form > * {
+        margin-bottom: 12px;
     }
 
     .provider-form .provider-save,
@@ -583,7 +610,8 @@ pre {
     }
 
     input, select {
-        min-width: 100%;
+        min-width: 0;
+        width: 100%;
     }
 
     .hero p {
