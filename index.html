@@ -38,16 +38,25 @@
         </p>
     </section>
 
-    <section id="authPanel" class="panel">
-        <h2>Admin Sign In</h2>
-        <div class="row">
-            <input id="emailInput" type="email" placeholder="Admin email">
-            <input id="passwordInput" type="password" placeholder="Password">
+    <section id="authPanel" class="panel auth-panel">
+        <div class="auth-header">
+            <h2>Admin Sign In</h2>
+            <p>Access your provider management dashboard</p>
         </div>
-        <div class="row">
-            <button id="signInBtn" class="primary">Sign In</button>
-            <button id="createUserBtn">Create User</button>
-            <button id="resetPasswordBtn">Reset Password</button>
+        <div class="auth-form">
+            <div class="form-field">
+                <span>Email Address</span>
+                <input id="emailInput" type="email" placeholder="admin@example.com">
+            </div>
+            <div class="form-field">
+                <span>Password</span>
+                <input id="passwordInput" type="password" placeholder="••••••••">
+            </div>
+            <button id="signInBtn" class="primary auth-submit">Sign In</button>
+        </div>
+        <div class="auth-links">
+            <button id="createUserBtn" class="text-btn">Create User</button>
+            <button id="resetPasswordBtn" class="text-btn">Reset Password</button>
         </div>
         <div id="authStatus" class="status"></div>
     </section>
